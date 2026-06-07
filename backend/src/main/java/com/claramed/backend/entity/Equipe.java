@@ -27,16 +27,16 @@ public class Equipe {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 150)
     private String nome;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, unique = true, length = 255)
     private String email;
 
     @JsonIgnore
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String senhaHash;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String cargo;
 }

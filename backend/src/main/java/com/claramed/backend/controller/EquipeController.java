@@ -2,6 +2,7 @@ package com.claramed.backend.controller;
 
 import com.claramed.backend.dto.ApiError;
 import com.claramed.backend.dto.UpdateEtapaRequest;
+import com.claramed.backend.repository.EtapaRepository;
 import com.claramed.backend.entity.Paciente;
 import com.claramed.backend.repository.PacienteRepository;
 import java.util.List;
@@ -20,9 +21,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class EquipeController {
 
     private final PacienteRepository pacienteRepository;
+    private final EtapaRepository etapaRepository;
 
-    public EquipeController(PacienteRepository pacienteRepository) {
+    public EquipeController(PacienteRepository pacienteRepository, EtapaRepository etapaRepository) {
         this.pacienteRepository = pacienteRepository;
+        this.etapaRepository = etapaRepository;
     }
 
     @GetMapping("/pacientes")
@@ -52,6 +55,10 @@ public class EquipeController {
     public ResponseEntity<Object> atualizarEtapa(@PathVariable String id, @RequestBody UpdateEtapaRequest request) {
         if (request == null || request.etapaId() == null) {
             return ResponseEntity.badRequest().body((Object) new ApiError("etapaId é obrigatório."));
+        }
+
+        if (!etapaRepository.existsById(request.etapaId())) {
+            return ResponseEntity.badRequest().body((Object) new ApiError("etapaId inválido."));
         }
 
         return pacienteRepository.findById(id)

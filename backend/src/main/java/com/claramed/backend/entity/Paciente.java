@@ -23,7 +23,7 @@ public class Paciente {
     @Column(nullable = false, length = 20, updatable = false)
     private String id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 150)
     private String nome;
 
     @Column(nullable = false)
@@ -35,7 +35,7 @@ public class Paciente {
     @Column(nullable = false, length = 20)
     private String prioridade;
 
-    @Column(nullable = false, length = 8)
+    @Column(nullable = false, length = 5)
     private String horarioChegada;
 
     @Column(nullable = false)

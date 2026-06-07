@@ -22,12 +22,12 @@ public class Etapa {
     @Id
     private Integer id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String label;
 
     @Column(nullable = false, length = 1000)
     private String descricao;
 
-    @Column(nullable = false, length = 16)
+    @Column(nullable = false, length = 32)
     private String icone;
 }
