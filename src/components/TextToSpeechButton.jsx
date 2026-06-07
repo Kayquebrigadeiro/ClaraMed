@@ -2,12 +2,7 @@ import { useState, useRef } from 'react';
 
 /**
  * Botão de text-to-speech usando a Web Speech API nativa.
- * Lê o texto passado via prop em voz alta.
- *
- * Sprint 4: Melhorado para maior visibilidade e acessibilidade.
- * - Ícone SVG grande e nítido (sem depender de emoji)
- * - Efeito de glow pulsante para chamar atenção
- * - Min-height 56px para touch target confortável
+ * Prompt 1: Design clínico, altura mínima 64px, efeito glow sutil.
  */
 export default function TextToSpeechButton({ texto, tamanhoGrande = false }) {
   const [falando, setFalando] = useState(false);
@@ -19,14 +14,12 @@ export default function TextToSpeechButton({ texto, tamanhoGrande = false }) {
       return;
     }
 
-    // Se já está falando, para
     if (falando) {
       window.speechSynthesis.cancel();
       setFalando(false);
       return;
     }
 
-    // Cancela qualquer fala anterior
     window.speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(texto);
@@ -34,7 +27,6 @@ export default function TextToSpeechButton({ texto, tamanhoGrande = false }) {
     utterance.rate = 0.9;
     utterance.pitch = 1;
 
-    // Tenta encontrar uma voz em português
     const voices = window.speechSynthesis.getVoices();
     const vozPt = voices.find(
       (v) => v.lang.startsWith('pt') && v.localService
@@ -56,21 +48,12 @@ export default function TextToSpeechButton({ texto, tamanhoGrande = false }) {
       aria-pressed={falando}
       title={falando ? 'Parar leitura' : 'Ouvir em voz alta'}
       className={`
-        group relative overflow-hidden
-        ${tamanhoGrande
-          ? 'w-full py-4 px-6 text-lg min-h-[56px]'
-          : 'py-3 px-5 text-base min-h-[48px]'
-        }
-        rounded-xl font-semibold
-        transition-all duration-300 cursor-pointer
-        flex items-center justify-center gap-3
-        ${falando
-          ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/30 scale-[1.02]'
-          : 'bg-gradient-to-r from-primary to-accent text-white hover:shadow-lg hover:shadow-primary/30 hover:scale-[1.02] tts-glow'
-        }
+        ${tamanhoGrande ? 'w-full btn-primary' : 'btn-primary'} 
+        ${!falando && 'tts-glow'} 
+        ${falando && 'bg-warning shadow-lg'}
+        cursor-pointer relative overflow-hidden
       `}
     >
-      {/* SVG Speaker Icon — always crisp, not emoji-dependent */}
       <span className={`flex-shrink-0 ${falando ? 'animate-pulse' : ''}`}>
         {falando ? (
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8" aria-hidden="true">
@@ -83,11 +66,10 @@ export default function TextToSpeechButton({ texto, tamanhoGrande = false }) {
         )}
       </span>
 
-      <span className="text-center">
+      <span className="text-center font-semibold">
         {falando ? 'Parar leitura' : 'Ouvir em voz alta'}
       </span>
 
-      {/* Ripple effect background when speaking */}
       {falando && (
         <span className="absolute inset-0 rounded-xl" aria-hidden="true">
           <span className="absolute inset-0 rounded-xl animate-ping bg-white/10" />

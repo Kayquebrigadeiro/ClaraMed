@@ -1,53 +1,60 @@
 import api from './api';
 import { PACIENTES_MOCK } from '../data/mockData';
 
+const useMock = import.meta.env.VITE_USE_MOCK === 'true';
+
 /**
- * Serviço de Paciente — Centraliza chamadas futuras à API relacionadas ao paciente.
- * Atualmente simula respostas com dados mockados para preparação da Sprint 5.
+ * Serviço de Paciente — Consome endpoints reais do backend Java.
+ * Prompt 2: Integração completa com API REST + fallback mock.
  */
 export const pacienteService = {
   /**
-   * Busca os detalhes de um paciente específico (via ID ou token contido no QR Code)
-   * @param {string} pacienteId - ID ou token do paciente
-   * @returns {Promise<Object>} Detalhes do paciente
+   * Busca os detalhes de um paciente específico
    */
   getPaciente: async (pacienteId) => {
-    // Simulação de chamada real:
-    // const response = await api.get(`/pacientes/${pacienteId}`);
-    // return response.data;
-    
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        const paciente = PACIENTES_MOCK.find((p) => p.id === pacienteId);
-        if (paciente) {
-          resolve({ ...paciente });
-        } else {
-          reject(new Error('Paciente não encontrado.'));
-        }
-      }, 500); // 500ms delay para simular rede
-    });
+    if (useMock) {
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          const paciente = PACIENTES_MOCK.find((p) => p.id === pacienteId);
+          if (paciente) {
+            resolve({ ...paciente });
+          } else {
+            reject(new Error('Paciente não encontrado.'));
+          }
+        }, 500);
+      });
+    }
+
+    try {
+      const response = await api.get(`/pacientes/${pacienteId}`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.erro || 'Erro ao buscar paciente', { cause: error });
+    }
   },
 
   /**
-   * Envia um alerta de "Preciso de ajuda" para a equipe médica
-   * @param {string} pacienteId - ID do paciente que solicita ajuda
-   * @returns {Promise<Object>} Resposta de confirmação
+   * Envia um alerta de "Preciso de ajuda"
    */
   postAlerta: async (pacienteId) => {
-    // Simulação de chamada real:
-    // const response = await api.post(`/pacientes/${pacienteId}/ajuda`);
-    // return response.data;
+    if (useMock) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          const paciente = PACIENTES_MOCK.find((p) => p.id === pacienteId);
+          if (paciente) {
+            paciente.precisaAjuda = true;
+          }
+          resolve({ success: true, message: 'Alerta enviado com sucesso.' });
+        }, 400);
+      });
+    }
 
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // Altera o estado do mock localmente
-        const paciente = PACIENTES_MOCK.find((p) => p.id === pacienteId);
-        if (paciente) {
-          paciente.precisaAjuda = true;
-        }
-        resolve({ success: true, message: 'Alerta enviado com sucesso.' });
-      }, 400);
-    });
+    try {
+      const response = await api.post(`/pacientes/${pacienteId}/ajuda`);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.erro || 'Erro ao enviar alerta', { cause: error });
+    }
   },
 };
 

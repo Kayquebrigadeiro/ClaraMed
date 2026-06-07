@@ -1,8 +1,8 @@
-# 🏥 ClaraMed — Frontend
+# 🏥 ClaraMed — Frontend + Backend
 
 O **ClaraMed** é uma plataforma de comunicação inteligente voltada para o pronto atendimento hospitalar. Ele exibe para pacientes e acompanhantes, em linguagem humana, clara e acessível, a etapa atual de seu atendimento — reduzindo a ansiedade da espera sem interferir em nenhuma decisão clínica ou triagem médica.
 
-Esta aplicação foi desenvolvida em **React** + **Vite** com foco absoluto em **acessibilidade** (WCAG AA) e **responsividade mobile**.
+Esta aplicação é um monorepo com **React** + **Vite** no frontend e **Spring Boot + SQL Server** no backend, com foco absoluto em **acessibilidade** (WCAG AA) e **responsividade mobile**.
 
 ---
 
@@ -23,6 +23,9 @@ O projeto foi estruturado e desenvolvido em sprints incrementais:
     *   Criação da pasta `src/services/` com estrutura pronta para consumo de API REST.
     *   Configuração do Axios instanciado com suporte a variáveis de ambiente (`VITE_API_URL`) e injetor automático de token JWT no `localStorage`.
     *   Inclusão de **Skeleton Loaders** animados nas telas de listagem para uma experiência rica e fluida durante o carregamento de dados.
+*   **Sprint 6 — API local funcional**:
+    *   Servidor local em `backend/` com Spring Boot, JWT, BCrypt e seeds iniciais.
+    *   Rotas públicas para pacientes e rotas protegidas para a equipe.
 
 ---
 
@@ -32,15 +35,20 @@ O projeto foi estruturado e desenvolvido em sprints incrementais:
 - **Vite**
 - **Tailwind CSS v4** (Integração oficial via `@tailwindcss/vite`)
 - **React Router Dom v7**
-- **Axios** (Preparado para integração)
+- **Axios**
 - **qrcode.react** (Geração de QR Codes dinâmicos)
 - **Web Speech API** (Nativa do navegador, sem dependências de terceiros)
+- **Spring Boot**
+- **Spring Security + JWT**
+- **Spring Data JPA**
+- **SQL Server**
 
 ---
 
 ## 📁 Estrutura de Pastas
 
 ```text
+backend/              # API Java Spring Boot
 src/
 ├── components/          # Componentes globais e reutilizáveis (TTS, Progresso, Botão Ajuda)
 ├── context/             # Estados globais (Autenticação e Lista de Pacientes)
@@ -73,15 +81,28 @@ src/
    cp .env.example .env
    ```
 
-4. **Inicie o servidor de desenvolvimento:**
+4. **Inicie a aplicação completa:**
    ```bash
    npm run dev
+   ```
+   Esse comando sobe a API local em `http://localhost:8080` e o frontend em `http://localhost:5173`.
+
+   Se quiser rodar só o backend:
+   ```bash
+   cd backend
+   .\mvnw.cmd spring-boot:run
    ```
 
 5. **Acesse as principais páginas:**
    - **Visualização do Paciente (Demo)**: `http://localhost:5173/paciente/pac-001`
    - **Login da Equipe**: `http://localhost:5173/login` (Credenciais no card inferior de ajuda)
-   - **Painel Médico**: `http://localhost:5173/painel`
+- **Painel Médico**: `http://localhost:5173/painel`
+
+### Backend
+
+- A API usa os contratos esperados pelo frontend: `/auth/login`, `/pacientes/{id}`, `/pacientes/{id}/ajuda`, `/equipe/pacientes`, `/equipe/alertas`, `/equipe/alertas/{pacienteId}`, `/equipe/pacientes/{id}/etapa`.
+- Em desenvolvimento, a aplicação sobe com profile `dev` e banco H2 para funcionar sem infraestrutura externa.
+- Em produção, ative `SPRING_PROFILES_ACTIVE=prod` e configure `DB_URL`, `DB_USER`, `DB_PASS`, `JWT_SECRET` e `CORS_ORIGIN`.
 
 ---
 

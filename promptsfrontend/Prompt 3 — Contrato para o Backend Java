@@ -1,0 +1,54 @@
+Sou desenvolvedor Java Spring Boot e preciso implementar a API REST consumida pelo frontend React do ClaraMed.
+
+ESTRUTURA DE DADOS DEFINIDA PELO FRONTEND:
+
+Paciente (JSON):
+{
+  "id": "pac-001",
+  "nome": "Maria Silva",
+  "idade": 45,
+  "etapaAtual": 1,
+  "prioridade": "urgente",
+  "horarioChegada": "08:15",
+  "precisaAjuda": false
+}
+
+Valores de prioridade: "normal" | "urgente" | "emergência"
+Etapas de 1 a 8:
+1-Recepção, 2-Triagem, 3-Aguardando Atendimento, 4-Em Atendimento,
+5-Exames, 6-Aguardando Resultado, 7-Retorno Médico, 8-Alta
+
+Login request: { "email": "string", "senha": "string" }
+Login response: { "token": "jwt_string", "user": { "nome": "string", "email": "string", "cargo": "string" } }
+
+ENDPOINTS A IMPLEMENTAR:
+
+GET    /pacientes/{id}              → retorna Paciente (público, sem JWT)
+POST   /pacientes/{id}/ajuda        → define precisaAjuda:true, retorna 200 OK (público)
+POST   /auth/login                  → autentica e retorna JWT
+GET    /equipe/pacientes            → lista todos os pacientes (requer JWT)
+GET    /equipe/alertas              → lista pacientes com precisaAjuda:true (requer JWT)
+PUT    /equipe/pacientes/{id}/etapa → body: {"etapaId": 3}, retorna paciente atualizado (requer JWT)
+DELETE /equipe/alertas/{id}        → define precisaAjuda:false, retorna 200 OK (requer JWT)
+
+REQUISITOS TÉCNICOS:
+
+1. CORS: liberar http://localhost:5173 e http://localhost:4173 para todos os métodos e headers
+
+2. Segurança:
+   - Rotas públicas: GET /pacientes/**, POST /pacientes/**/ajuda, POST /auth/login
+   - Rotas protegidas: tudo em /equipe/** (validar Bearer token no header Authorization)
+
+3. Erros padronizados:
+   - 404: { "erro": "Paciente não encontrado" }
+   - 401: { "erro": "Token inválido ou expirado" }
+   - 400: { "erro": "Dados inválidos" }
+
+4. Banco de dados: H2 em memória para o hackathon, com dados seed automáticos no startup:
+   - 8 pacientes de exemplo com nomes brasileiros
+   - Credencial de demo: email medico@claramed.com / senha 123456
+   - Cargo do usuário demo: "Médico Plantonista"
+
+5. Stack: Spring Boot 3, Spring Security com JWT (jjwt), Spring Data JPA, H2
+
+Implemente as entidades JPA, repositories, services e controllers completos. Inclua a classe de configuração do Spring Security e o filtro JWT. Adicione o data.sql ou CommandLineRunner para o seed dos dados.

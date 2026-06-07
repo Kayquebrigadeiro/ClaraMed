@@ -1,0 +1,54 @@
+Meu backend está pronto em Java Spring Boot (porta 8080). Preciso integrar meu frontend React com os endpoints reais, substituindo os mocks atuais.
+
+ESTRUTURA ATUAL DOS SERVIÇOS:
+
+=== src/services/api.js ===
+import axios from 'axios';
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080',
+  timeout: 10000,
+  headers: { 'Content-Type': 'application/json' },
+});
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('claramed_token');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+export default api;
+
+=== src/services/pacienteService.js ===
+[atualmente usa Promise com setTimeout — mock]
+
+=== src/services/equipeService.js ===
+[atualmente usa Promise com setTimeout — mock]
+
+ENDPOINTS DO BACKEND:
+GET    /pacientes/{id}
+POST   /pacientes/{id}/ajuda
+POST   /auth/login
+GET    /equipe/pacientes
+GET    /equipe/alertas
+PUT    /equipe/pacientes/{id}/etapa   (body: { etapaId: number })
+DELETE /equipe/alertas/{id}
+
+TAREFA:
+
+1. Reescreva pacienteService.js e equipeService.js chamando os endpoints reais via api.js, sem setTimeout e sem mock data
+
+2. Na TelaPaciente.jsx, substitua o setInterval de 10s por polling real:
+   - useEffect com setInterval chamando pacienteService.getPaciente(pacienteId) a cada 10s
+   - Trate loading state e erro de rede separadamente
+   - Cancele o interval no cleanup do useEffect
+
+3. No PainelEquipe.jsx, implemente polling da lista a cada 15s:
+   - Promise.all([equipeService.getPacientes(), equipeService.getAlertas()])
+   - Mostre badge piscante na aba do navegador com document.title enquanto houver alertas ativos
+
+4. Adicione interceptor de response no api.js:
+   - Se receber 401, limpar localStorage e redirecionar para /login automaticamente
+
+5. Crie .env.example com:
+   VITE_API_URL=http://localhost:8080
+   VITE_USE_MOCK=false
+
+Mantenha os dados mockados como fallback quando VITE_USE_MOCK=true para demos offline.

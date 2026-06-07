@@ -1,0 +1,84 @@
+Você é um desenvolvedor frontend sênior especialista em React e design de sistemas hospitalares. Vou te passar meu projeto ClaraMed — uma plataforma de comunicação para pronto-atendimento — e preciso que você refatore o frontend para nível de produção antes de um hackathon.
+
+CONTEXTO DO PROJETO:
+- React 19 + Vite + Tailwind CSS v4
+- 3 telas: /paciente/:id (paciente escaneia QR), /login (equipe), /painel (dashboard médico)
+- Backend em Java Spring Boot na porta 8080
+- Foco absoluto em acessibilidade WCAG AA e mobile-first
+
+ARQUIVOS ATUAIS DO PROJETO:
+
+=== index.css ===
+@import "tailwindcss";
+@theme {
+  --color-primary: #0ea5e9;
+  --color-primary-dark: #0284c7;
+  --color-primary-light: #38bdf8;
+  --color-accent: #6366f1;
+  --color-surface: #0f172a;
+  --color-surface-light: #1e293b;
+  --color-surface-lighter: #334155;
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #cbd5e1;
+  --color-text-muted: #94a3b8;
+  --color-glass: rgba(15, 23, 42, 0.7);
+}
+body {
+  background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+  color: var(--color-text-primary);
+}
+[...restante do index.css atual]
+
+=== Header.jsx ===
+[cole o conteúdo atual]
+
+=== TelaPaciente.jsx ===
+[cole o conteúdo atual]
+
+=== TelaLogin.jsx ===
+[cole o conteúdo atual]
+
+=== PainelEquipe.jsx ===
+[cole o conteúdo atual]
+
+=== EtapaProgress.jsx ===
+[cole o conteúdo atual]
+
+=== BotaoAjuda.jsx ===
+[cole o conteúdo atual]
+
+=== TextToSpeechButton.jsx ===
+[cole o conteúdo atual]
+
+PROBLEMAS A RESOLVER:
+
+1. IDENTIDADE VISUAL
+- Abandonar o glassmorphism genérico azul/roxo atual
+- Nova paleta: fundo branco clínico #FAFAFA, cor principal azul-petróleo #0B4F6C, acento verde-esmeralda #1B9AAA, vermelho-alerta #E63946 apenas para emergências
+- Tipografia: importar "DM Sans" do Google Fonts para corpo, "DM Serif Display" para títulos da tela do paciente
+- Substituir fundo dark por fundo claro com textura SVG sutil (padrão de cruzes médicas em opacity 0.03)
+
+2. TELA DO PACIENTE (/paciente/:id)
+- Redesenhar EtapaProgress: substituir emojis por ícones SVG médicos, usar timeline vertical no mobile (não horizontal com scroll)
+- Card da etapa atual com borda esquerda colorida de 4px que muda por etapa: azul triagem, âmbar aguardando, verde em atendimento
+- Tipografia maior: nome da etapa em 2rem bold, descrição em 1.125rem com line-height 1.8
+- BotaoAjuda e TextToSpeechButton maiores, min 64px de altura
+
+3. PAINEL DA EQUIPE (/painel)
+- Layout 3 colunas no desktop: [fila de pacientes | detalhes | alertas ativos]
+- Cards de paciente: nome, tempo de espera calculado desde horarioChegada, badge de prioridade (verde/âmbar/vermelho), etapa atual
+- Alertas com pulsação vermelha enquanto houver precisaAjuda:true
+- Botão por paciente para avançar etapa com select de seleção
+- Modal com QR Code via qrcode.react ao clicar em paciente, exibindo o link /paciente/:id
+
+4. COMPONENTES GLOBAIS
+- Header: nome do usuário logado + botão logout quando em /painel
+- SkeletonLoader nos 3 contextos: lista carregando, etapa carregando, alertas carregando
+- ErrorBoundary visual elegante no lugar de alert()
+
+5. ACESSIBILIDADE (manter e melhorar)
+- Manter todos os aria-labels, role="status", aria-live="polite" existentes
+- Adicionar aria-describedby nos cards de etapa
+- Contraste mínimo 4.5:1 em todos os textos novos
+
+Entregue arquivo por arquivo, começando pelo index.css com as novas variáveis, depois componentes, depois páginas. Explique cada decisão de design.

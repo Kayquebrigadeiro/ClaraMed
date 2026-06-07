@@ -1,32 +1,39 @@
 import { createContext, useContext, useState, useCallback } from 'react';
-import { CREDENCIAIS_MOCK } from '../data/mockData';
+import equipeService from '../services/equipeService';
 
 const AuthContext = createContext(null);
 
+const loadStoredUser = () => {
+  try {
+    const raw = localStorage.getItem('claramed_user');
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
+
 export function AuthProvider({ children }) {
-  const [usuario, setUsuario] = useState(null);
+  const [usuario, setUsuario] = useState(loadStoredUser);
   const [erro, setErro] = useState('');
 
-  const login = useCallback((email, senha) => {
+  const login = useCallback(async (email, senha) => {
     setErro('');
-    if (
-      email === CREDENCIAIS_MOCK.email &&
-      senha === CREDENCIAIS_MOCK.senha
-    ) {
-      const user = {
-        email: CREDENCIAIS_MOCK.email,
-        nome: CREDENCIAIS_MOCK.nome,
-        cargo: CREDENCIAIS_MOCK.cargo,
-      };
+    try {
+      const { user } = await equipeService.login({ email, senha });
       setUsuario(user);
+      localStorage.setItem('claramed_user', JSON.stringify(user));
       return true;
+    } catch (error) {
+      setErro(error.message || 'E-mail ou senha inválidos.');
+      return false;
     }
-    setErro('E-mail ou senha inválidos.');
-    return false;
   }, []);
 
   const logout = useCallback(() => {
     setUsuario(null);
+    setErro('');
+    localStorage.removeItem('claramed_token');
+    localStorage.removeItem('claramed_user');
   }, []);
 
   return (

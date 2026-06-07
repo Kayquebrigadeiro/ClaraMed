@@ -150,7 +150,7 @@ export const CREDENCIAIS_MOCK = {
  * Retorna o label da prioridade com cor associada.
  */
 export const PRIORIDADE_CONFIG = {
-  normal: { label: 'Normal', cor: 'text-sky-400', bg: 'bg-sky-500/20', border: 'border-sky-500/30' },
-  urgente: { label: 'Urgente', cor: 'text-amber-400', bg: 'bg-amber-500/20', border: 'border-amber-500/30' },
-  'emergência': { label: 'Emergência', cor: 'text-red-400', bg: 'bg-red-500/20', border: 'border-red-500/30' },
+  normal: { label: 'Normal', cor: 'text-accent', bg: 'bg-accent/10', border: 'border-accent/30' },
+  urgente: { label: 'Urgente', cor: 'text-warning', bg: 'bg-warning/10', border: 'border-warning/30' },
+  'emergência': { label: 'Emergência', cor: 'text-danger', bg: 'bg-danger/10', border: 'border-danger/30' },
 };
